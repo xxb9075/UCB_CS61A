@@ -1,51 +1,5 @@
 """Optional questions for Lab 1"""
 
-# If Statements
-
-def xk(c, d):
-    if c == 4:
-        return 6
-    elif d >= 4:
-        return 6 + 7 + c
-    else:
-        return 25
-
-def how_big(x):
-    if x > 10:
-        print('huge')
-    elif x > 5:
-        return 'big'
-    elif x > 0:
-        print('small')
-    else:
-        print("nothin'")
-
-def so_big(x):
-    if x > 10:
-        print('huge')
-    if x > 5:
-        return 'big'
-    if x > 0:
-        print('small')
-    print("nothin'")
-
-def ab(c, d):
-    if c > 5:
-        print(c)
-    elif c > 7:
-        print(d)
-    print('foo')
-
-def bake(cake, make):
-    if cake == 0:
-        cake = cake + 1
-        print(cake)
-    if cake == 1:
-        print(make)
-    else:
-        return cake
-    return make
-
 # Boolean Operators
 
 def both_positive(x, y):
@@ -56,7 +10,7 @@ def both_positive(x, y):
     >>> both_positive(1, 1)
     True
     """
-    return x and y > 0 # You can replace this line!
+    return x > 0 and y > 0
 
 # While Loops
 
@@ -72,7 +26,11 @@ def falling(n, k):
     >>> falling(4, 1)  # 4
     4
     """
-    "*** YOUR CODE HERE ***"
+    f = 1
+    for i in range(n-k+1, n+1):
+        f = f*i
+    return f
+
 
 # Guessing Game
 
@@ -81,23 +39,33 @@ from random import randint
 LOWER = 1
 UPPER = 10
 
+
 def guess_random():
     """Guess randomly and return the number of guesses."""
     prompt_for_number(LOWER, UPPER)   # asks the user to choose a number
     num_guesses, correct = 0, False
     while not correct:
-        guess = randint(LOWER, UPPER) # randomly guess
+        guess = randint(LOWER, UPPER)  # randomly guess
         correct = is_correct(guess)   # ask user if guess is correct
         num_guesses = num_guesses + 1
     return num_guesses
 
+
 def guess_linear():
     """Guess in increasing order and return the number of guesses."""
     prompt_for_number(LOWER, UPPER)
-    num_guesses = 1
-    guess = LOWER
-    "*** YOUR CODE HERE ***"
+    num_guesses = 0
+    guess = UPPER
+    correct = False
+    while not correct:
+        if is_correct(guess):
+            correct = True
+            num_guesses += 1
+        elif is_too_high(guess):
+            guess -= 1
+            num_guesses += 1
     return num_guesses
+
 
 def guess_binary():
     """Return the number of attempted guesses. Implement a faster search
@@ -108,11 +76,24 @@ def guess_binary():
     algorithm doesn't need to try numbers that are greater than guess.
     """
     prompt_for_number(LOWER, UPPER)
-    num_guesses = 1
+    num_guesses = 0
     lower, upper = LOWER, UPPER
     guess = (lower + upper) // 2
-    "*** YOUR CODE HERE ***"
+    correct = False
+    while not correct:
+        if is_correct(guess):
+            correct = True
+            num_guesses += 1
+        elif is_too_high(guess):
+            upper = guess
+            guess = (lower + upper) // 2
+            num_guesses += 1
+        else:
+            lower = guess
+            guess = (lower + upper) // 2
+            num_guesses += 1
     return num_guesses
+
 
 # Receive user input. You do not need to understand the code below this line.
 
@@ -126,20 +107,24 @@ def prompt_for_number(lower, upper):
         if lower <= number <= upper:
             is_valid_number = True
 
+
 def is_correct(guess):
     """Ask the user if a guess is correct and return whether they respond y."""
     return is_yes('Is {0} your number? [y/n] '.format(guess))
+
 
 def is_too_high(guess):
     """Ask the user if a guess is too high and return whether they say yes."""
     return is_yes('Is {0} too high? [y/n] '.format(guess))
 
+
 def is_yes(prompt):
     """Ask the user a yes or no question and return whether they say yes."""
-    while True: # This while statement will loop until a "return" is reached.
+    while True:  # This while statement will loop until a "return" is reached.
         yes_no = input(prompt).strip()
         if yes_no == 'y':
             return True
         elif yes_no == 'n':
             return False
         print('Please type y or n and press return/enter')
+        
