@@ -127,4 +127,3 @@ def is_yes(prompt):
         elif yes_no == 'n':
             return False
         print('Please type y or n and press return/enter')
-        
