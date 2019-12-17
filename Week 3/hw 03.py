@@ -1,8 +1,9 @@
-HW_SOURCE_FILE = 'hw03.py'
+HW_SOURCE_FILE = 'hw 03.py'
 
 #############
 # Questions #
 #############
+
 
 def has_seven(k):
     """Returns True if at least one of the digits of k is a 7, False otherwise.
@@ -24,7 +25,14 @@ def has_seven(k):
     ...       ['Assign', 'AugAssign'])
     True
     """
-    "*** YOUR CODE HERE ***"
+    if k % 10 == 7:
+        return True
+    else:
+        if k == 0:
+            return False
+        else:
+            return has_seven(k//10)
+
 
 def summation(n, term):
 
@@ -44,21 +52,31 @@ def summation(n, term):
     True
     """
     assert n >= 1
-    "*** YOUR CODE HERE ***"
+    if n == 1:
+        return term(n)
+    else:
+        return term(n)+summation(n-1, term)
+
 
 def square(x):
     return x * x
 
+
 def identity(x):
     return x
 
+
 triple = lambda x: 3 * x
+
 
 increment = lambda x: x + 1
 
+
 add = lambda x, y: x + y
 
+
 mul = lambda x, y: x * y
+
 
 def accumulate(combiner, base, n, term):
     """Return the result of combining the first n terms in a sequence and base.
@@ -76,7 +94,14 @@ def accumulate(combiner, base, n, term):
     >>> accumulate(mul, 2, 3, square)   # 2 * 1^2 * 2^2 * 3^2
     72
     """
-    "*** YOUR CODE HERE ***"
+    if n == 1:
+        return combiner(base, term(n))
+    elif n == 0:
+        return base
+    else:
+        base = combiner(base, term(n))
+        return accumulate(combiner, base, n-1, term)
+
 
 def summation_using_accumulate(n, term):
     """Returns the sum of term(1) + ... + term(n). The implementation
@@ -91,7 +116,8 @@ def summation_using_accumulate(n, term):
     ...       ['Recursion', 'For', 'While'])
     True
     """
-    "*** YOUR CODE HERE ***"
+    return accumulate(add, 0, n, term)
+
 
 def product_using_accumulate(n, term):
     """An implementation of product using accumulate.
@@ -105,7 +131,8 @@ def product_using_accumulate(n, term):
     ...       ['Recursion', 'For', 'While'])
     True
     """
-    "*** YOUR CODE HERE ***"
+    return accumulate(mul, 1, n, term)
+
 
 def filtered_accumulate(combiner, base, pred, n, term):
     """Return the result of combining the terms in a sequence of N terms
@@ -131,7 +158,10 @@ def filtered_accumulate(combiner, base, pred, n, term):
     True
     """
     def combine_if(x, y):
-        "*** YOUR CODE HERE ***"
+        if pred(y):
+            return combiner(x, y)
+        else:
+            return x
     return accumulate(combine_if, base, n, term)
 
 def odd(x):
@@ -155,7 +185,11 @@ def make_repeater(f, n):
     >>> make_repeater(square, 0)(5)
     5
     """
-    "*** YOUR CODE HERE ***"
+    if n == 0:
+        return identity
+    else:
+        return compose1(f, make_repeater(f, n-1))
+
 
 def compose1(f, g):
     """Return a function h, such that h(x) = f(g(x))."""
@@ -167,9 +201,7 @@ def compose1(f, g):
 # Extra Questions #
 ###################
 
-quine = """
-"*** YOUR CODE HERE ***"
-"""
+quine = """ _='_=%r; print(_%%_)'; print (_%_) """
 
 def zero(f):
     return lambda x: x
@@ -179,11 +211,10 @@ def successor(n):
 
 def one(f):
     """Church numeral 1: same as successor(zero)"""
-    "*** YOUR CODE HERE ***"
-
+    return lambda x: f(x)
 def two(f):
     """Church numeral 2: same as successor(successor(zero))"""
-    "*** YOUR CODE HERE ***"
+    return lambda x: f(f(x))
 
 three = successor(two)
 
@@ -199,7 +230,7 @@ def church_to_int(n):
     >>> church_to_int(three)
     3
     """
-    "*** YOUR CODE HERE ***"
+    return n(lambda x: x+1)(0)
 
 def add_church(m, n):
     """Return the Church numeral for m + n, for Church numerals m and n.
@@ -207,7 +238,7 @@ def add_church(m, n):
     >>> church_to_int(add_church(two, three))
     5
     """
-    "*** YOUR CODE HERE ***"
+    return lambda f: lambda x: m(f)(n(f)(x))
 
 def mul_church(m, n):
     """Return the Church numeral for m * n, for Church numerals m and n.
@@ -218,7 +249,7 @@ def mul_church(m, n):
     >>> church_to_int(mul_church(three, four))
     12
     """
-    "*** YOUR CODE HERE ***"
+    return lambda f: lambda x: m(n(f))(x)
 
 def pow_church(m, n):
     """Return the Church numeral m ** n, for Church numerals m and n.
@@ -228,4 +259,4 @@ def pow_church(m, n):
     >>> church_to_int(pow_church(three, two))
     9
     """
-    "*** YOUR CODE HERE ***"
+    return lambda f: lambda x: n(m)(f)(x)
