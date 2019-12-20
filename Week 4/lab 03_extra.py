@@ -1,6 +1,6 @@
 """ Optional problems for Lab 3 """
 
-from lab03 import *
+from lab 03 import *
 
 ## Higher order functions
 
