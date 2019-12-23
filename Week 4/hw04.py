@@ -26,7 +26,7 @@ def taxicab(a, b):
     >>> taxicab(ess_a_bagel, times_square)
     9
     """
-    "*** YOUR CODE HERE ***"
+    return abs(street(a)-street(b))+abs(avenue(a)-avenue(b))
 
 def squares(s):
     """Returns a new list containing square roots of the elements of the
@@ -39,7 +39,11 @@ def squares(s):
     >>> squares(seq)
     []
     """
-    "*** YOUR CODE HERE ***"
+    result = []
+    for i in s:
+        if i ** 0.5 == round(i ** 0.5):
+            result.append(round(i ** 0.5))
+    return result
 
 def g(n):
     """Return the value of G(n), computed recursively.
