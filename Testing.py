@@ -1,24 +1,33 @@
-def ten_pairs(n, count = 0):
-    """Return the number of ten-pairs within positive integer n.
+def count_change(amount):
+    """Return the number of ways to make change for amount.
 
-    >>> ten_pairs(7823952)
-    3
-    >>> ten_pairs(55055)
+    >>> count_change(7)
     6
-    >>> ten_pairs(9641469)
-    6
+    >>> count_change(10)
+    14
+    >>> count_change(20)
+    60
+    >>> count_change(100)
+    9828
     """
-    if n//10 == 0:
-        return count
-    else:
-        r = n % 10
+    def count_partitions(n, m):
+        """Count the ways to partition n using parts up to m."""
+        if n == 0:
+            return 1
+        elif n < 0:
+            return 0
+        elif m == 0:
+            return 0
+        else:
+            return count_partitions(n - m, m) + count_partitions(n, m//2)
 
-        def helper(n, count):
-            if n//10 == 0:
-                return count
-            else:
-                if n//10 % 10+r == 10:
-                    count += 1
-                return helper(n//10, count)
+    def coin_max(n):
+        t = 1
+        while 2**t <= n:
+            t += 1
+        return t
 
-        return helper(n, count)+ten_pairs(n//10, count)
+    return count_partitions(amount, 2**coin_max(amount))
+
+
+count_change(7)

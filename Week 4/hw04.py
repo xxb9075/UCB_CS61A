@@ -125,7 +125,39 @@ def pingpong(n):
     >>> check(HW_SOURCE_FILE, 'pingpong', ['Assign', 'AugAssign'])
     True
     """
-    "*** YOUR CODE HERE ***"
+    # The following code is annotated because no assignment is allowed
+    # i = 1
+    # s = [1,2]
+    # if n == 1:
+    #     return
+    # elif n == 2:
+    #     return s[1]
+    # while i < n:
+    #     j = 1
+    #     i += 1
+    #     while i // 10**j != 0:
+    #         j += 1
+    #     if i % 7 == 0 or has_seven(i):
+    #         if s[i-1] > s[i-2]:
+    #             s.append(s[i-1]-1)
+    #         else:
+    #             s.append(s[i-1]+1)
+    #     else:
+    #         if s[i-1] > s[i-2]:
+    #             s.append(s[i-1]+1)
+    #         else:
+    #             s.append(s[i-1]-1)
+    # return s[i-1]
+    def helper(i, num, trend):
+        if i == n:
+            return num
+        else:
+            if has_seven(i) or i%7 == 0:
+                return helper(i+1, num-trend, -trend)
+            else:
+                return helper(i+1, num+trend, trend)
+    return helper(1, 1, 1)
+
 
 def has_seven(k):
     """Returns True if at least one of the digits of k is a 7, False otherwise.
@@ -162,7 +194,24 @@ def count_change(amount):
     >>> count_change(100)
     9828
     """
-    "*** YOUR CODE HERE ***"
+    def count_partitions(n, m):
+        """Count the ways to partition n using parts up to m."""
+        if n == 0:
+            return 1
+        elif n < 0:
+            return 0
+        elif m == 0:
+            return 0
+        else:
+            return count_partitions(n - m, m) + count_partitions(n, m //2)
+
+    def coin_max(n):
+        t = 1
+        while 2**t <= n:
+            t += 1
+        return t
+
+    return count_partitions(amount, 2**coin_max(amount))
 
 ###################
 # Extra Questions #
@@ -179,4 +228,5 @@ def make_anonymous_factorial():
     >>> check(HW_SOURCE_FILE, 'make_anonymous_factorial', ['Assign', 'AugAssign', 'FunctionDef', 'Recursion'])
     True
     """
-    return 'YOUR_EXPRESSION_HERE'
+    return lambda n: (lambda f, n: f(f, n))(lambda s, x: x*s(s, x-1) if x > 0 else 1, n)
+
