@@ -1,17 +1,8 @@
 
 
-def flatten(lst, lst_new = []):
-    """Returns a flattened version of lst.
-
-    >>> flatten([1, 2, 3])     # normal list
-    [1, 2, 3]
-    >>> x = [1, [2, 3], 4]      # deep list
-    >>> flatten(x)
-    [1, 2, 3, 4]
-    >>> x = [[1, [1, 1]], 1, [1, 1]] # deep list
-    >>> flatten(x)
-    [1, 1, 1, 1, 1, 1]
-    """
+def flatten(lst, lst_new = None):
+    if lst_new is None:
+        lst_new = []
     i = 0
     while i < len(lst):
         if type(lst[i]) != list:

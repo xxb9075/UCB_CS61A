@@ -3,7 +3,7 @@
 from lab04 import *
 
 # Q6
-def flatten(lst, lst_new = []):
+def flatten(lst, lst_new = None):
     """Returns a flattened version of lst.
 
     >>> flatten([1, 2, 3])     # normal list
@@ -15,6 +15,8 @@ def flatten(lst, lst_new = []):
     >>> flatten(x)
     [1, 1, 1, 1, 1, 1]
     """
+    if lst_new is None:
+        lst_new = []
     i = 0
     while i < len(lst):
         if type(lst[i]) != list:
@@ -38,7 +40,8 @@ def merge(lst1, lst2):
     >>> merge([5, 7], [2, 4, 6])
     [2, 4, 5, 6, 7]
     """
-    "*** YOUR CODE HERE ***"
+    lst = [lst1, lst2]
+    return list(set(flatten(lst)))
 
 ######################
 ### Connect N Game ###
