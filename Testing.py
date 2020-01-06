@@ -1,33 +1,29 @@
-def count_change(amount):
-    """Return the number of ways to make change for amount.
 
-    >>> count_change(7)
-    6
-    >>> count_change(10)
-    14
-    >>> count_change(20)
-    60
-    >>> count_change(100)
-    9828
+
+def flatten(lst, lst_new = []):
+    """Returns a flattened version of lst.
+
+    >>> flatten([1, 2, 3])     # normal list
+    [1, 2, 3]
+    >>> x = [1, [2, 3], 4]      # deep list
+    >>> flatten(x)
+    [1, 2, 3, 4]
+    >>> x = [[1, [1, 1]], 1, [1, 1]] # deep list
+    >>> flatten(x)
+    [1, 1, 1, 1, 1, 1]
     """
-    def count_partitions(n, m):
-        """Count the ways to partition n using parts up to m."""
-        if n == 0:
-            return 1
-        elif n < 0:
-            return 0
-        elif m == 0:
-            return 0
+    i = 0
+    while i < len(lst):
+        if type(lst[i]) != list:
+            lst_new.append(lst[i])
+            i += 1
         else:
-            return count_partitions(n - m, m) + count_partitions(n, m//2)
+            flatten(lst[i], lst_new)
+            i += 1
+    return lst_new
 
-    def coin_max(n):
-        t = 1
-        while 2**t <= n:
-            t += 1
-        return t
+x = [[1, [1, 1]], 1, [1, 1]]
+print(flatten(x))
 
-    return count_partitions(amount, 2**coin_max(amount))
-
-
-count_change(7)
+x = [1, [2, 3], 4]
+print(flatten(x))
