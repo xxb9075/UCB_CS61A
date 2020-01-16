@@ -1,16 +1,21 @@
+from math import *
+
 def tree(label, branches=[]):
     """Construct a tree with the given label value and a list of branches."""
     for branch in branches:
         assert is_tree(branch), 'branches must be trees'
     return [label] + list(branches)
 
+
 def label(tree):
     """Return the label value of a tree."""
     return tree[0]
 
+
 def branches(tree):
     """Return the list of branches of the given tree."""
     return tree[1:]
+
 
 def is_tree(tree):
     """Returns True if the given tree is a tree, and False otherwise."""
@@ -21,11 +26,13 @@ def is_tree(tree):
             return False
     return True
 
+
 def is_leaf(tree):
     """Returns True if the given tree's list of branches is empty, and False
     otherwise.
     """
     return not branches(tree)
+
 
 def print_tree(t, indent=0):
     """Print a representation of this tree in which each node is
@@ -50,6 +57,7 @@ def print_tree(t, indent=0):
     for b in branches(t):
         print_tree(b, indent + 1)
 
+
 def copy_tree(t):
     """Returns a copy of t. Only for testing purposes.
 
@@ -60,6 +68,7 @@ def copy_tree(t):
     5
     """
     return tree(label(t), [copy_tree(b) for b in branches(t)])
+
 
 #############
 # Questions #
@@ -104,6 +113,7 @@ def print_move(origin, destination):
     """Print instructions to move a disk."""
     print("Move the top disk from rod", origin, "to rod", destination)
 
+
 def move_stack(n, start, end):
     """Print the moves required to move n disks on the start pole to the end
     pole without violating the rules of Towers of Hanoi.
@@ -144,48 +154,59 @@ def move_stack(n, start, end):
 # Mobiles #
 ###########
 
+
 def mobile(left, right):
     """Construct a mobile from a left side and a right side."""
     return tree('mobile', [left, right])
 
+
 def is_mobile(m):
     return is_tree(m) and label(m) == 'mobile'
+
 
 def sides(m):
     """Select the sides of a mobile."""
     assert is_mobile(m), "must call sides on a mobile"
     return branches(m)
 
+
 def is_side(m):
     return not is_mobile(m) and not is_weight(m) and type(label(m)) == int
+
 
 def side(length, mobile_or_weight):
     """Construct a side: a length of rod with a mobile or weight at the end."""
     return tree(length, [mobile_or_weight])
+
 
 def length(s):
     """Select the length of a side."""
     assert is_side(s), "must call length on a side"
     return label(s)
 
+
 def end(s):
     """Select the mobile or weight hanging at the end of a side."""
     assert is_side(s), "must call end on a side"
     return branches(s)[0]
+
 
 def weight(size):
     """Construct a weight of some size."""
     assert size > 0
     return tree(size)
 
+
 def size(w):
     """Select the size of a weight."""
     assert is_weight(w)
     return label(w)
 
+
 def is_weight(w):
     """Whether w is a weight, not a mobile."""
     return not is_mobile(w) and not branches(w)
+
 
 def examples():
     t = mobile(side(1, weight(2)),
@@ -194,7 +215,7 @@ def examples():
                side(1, mobile(side(2, weight(3)),
                               side(3, weight(2)))))
     v = mobile(side(4, t), side(2, u))
-    return (t, u, v)
+    return t, u, v
 
 
 def total_weight(m):
@@ -213,6 +234,7 @@ def total_weight(m):
     else:
         assert is_mobile(m), "must get total weight of a mobile or a weight"
         return sum([total_weight(end(s)) for s in sides(m)])
+
 
 def balanced(m):
     """Return whether m is balanced.
@@ -233,17 +255,16 @@ def balanced(m):
     def side_balanced():
         if is_mobile(end(sides(m)[0])) and is_mobile(end(sides(m)[1])):
             return balanced(end(sides(m)[0])) and balanced(end(sides(m)[1]))
-        elif is_mobile(end(sides(m)[0])) and not is_mobile(end(sides(m)[1])):
+        elif is_mobile(end(sides(m)[0])):
             return balanced(end(sides(m)[0]))
-        elif not is_mobile(end(sides(m)[0])) and is_mobile(end(sides(m)[1])):
+        elif is_mobile(end(sides(m)[1])):
             return balanced(end(sides(m)[1]))
         else:
             return False
 
-    if is_mobile(m) and is_weight(end(sides(m)[0])) and is_weight(end(sides(m)[1])):
-        return length(sides(m)[0])*total_weight(end(sides(m)[0])) == length(sides(m)[1])*total_weight(end(sides(m)[1]))
-    elif is_mobile(m) and side_balanced():
-        return length(sides(m)[0])*total_weight(end(sides(m)[0])) == length(sides(m)[1])*total_weight(end(sides(m)[1]))
+    left_torque, right_torque = [total_weight(end(x)) * length(x) for x in sides(m)]
+    if is_weight(end(sides(m)[0])) and is_weight(end(sides(m)[1])) or side_balanced():
+        return left_torque == right_torque
     else:
         return False
 
@@ -295,6 +316,7 @@ class Account:
         """Return the number of years until balance would grow to amount."""
         assert self.balance > 0 and amount > 0 and self.interest > 0
         "*** YOUR CODE HERE ***"
+
 
 class FreeChecking(Account):
     """A bank account that charges for withdrawals, but the first two are free!
@@ -450,17 +472,21 @@ def interval(a, b):
     """Construct an interval from a to b."""
     return [a, b]
 
+
 def lower_bound(x):
     """Return the lower bound of interval x."""
-    "*** YOUR CODE HERE ***"
+    return min(x)
+
 
 def upper_bound(x):
     """Return the upper bound of interval x."""
-    "*** YOUR CODE HERE ***"
+    return max(x)
+
 
 def str_interval(x):
     """Return a string representation of interval x."""
     return '{0} to {1}'.format(lower_bound(x), upper_bound(x))
+
 
 def add_interval(x, y):
     """Return an interval that contains the sum of any value in interval x and
@@ -469,36 +495,42 @@ def add_interval(x, y):
     upper = upper_bound(x) + upper_bound(y)
     return interval(lower, upper)
 
+
 def mul_interval(x, y):
     """Return the interval that contains the product of any value in x and any
     value in y."""
-    p1 = x[0] * y[0]
-    p2 = x[0] * y[1]
-    p3 = x[1] * y[0]
-    p4 = x[1] * y[1]
+    p1 = lower_bound(x) * lower_bound(y)
+    p2 = lower_bound(x) * upper_bound(y)
+    p3 = upper_bound(x) * lower_bound(y)
+    p4 = upper_bound(x) * upper_bound(y)
     return [min(p1, p2, p3, p4), max(p1, p2, p3, p4)]
+
 
 def sub_interval(x, y):
     """Return the interval that contains the difference between any value in x
     and any value in y."""
-    "*** YOUR CODE HERE ***"
+    return interval(max(lower_bound(x), lower_bound(x)), min(upper_bound(x), upper_bound(y)))
+
 
 def div_interval(x, y):
     """Return the interval that contains the quotient of any value in x divided by
     any value in y. Division is implemented as the multiplication of x by the
     reciprocal of y."""
-    "*** YOUR CODE HERE ***"
+    assert lower_bound(y)*upper_bound(y) > 0, 'y can not be zero'
     reciprocal_y = interval(1/upper_bound(y), 1/lower_bound(y))
     return mul_interval(x, reciprocal_y)
 
+
 def par1(r1, r2):
     return div_interval(mul_interval(r1, r2), add_interval(r1, r2))
+
 
 def par2(r1, r2):
     one = interval(1, 1)
     rep_r1 = div_interval(one, r1)
     rep_r2 = div_interval(one, r2)
     return div_interval(one, add_interval(rep_r1, rep_r2))
+
 
 def check_par():
     """Return two intervals that give different results for parallel resistors.
@@ -509,12 +541,14 @@ def check_par():
     >>> lower_bound(x) != lower_bound(y) or upper_bound(x) != upper_bound(y)
     True
     """
-    r1 = interval(1, 1) # Replace this line!
-    r2 = interval(1, 1) # Replace this line!
+    r1 = interval(1/2, 1) # Replace this line!
+    r2 = interval(1, 2) # Replace this line!
     return r1, r2
+
 
 def multiple_references_explanation():
     return """The multiple reference problem..."""
+
 
 def quadratic(x, a, b, c):
     """Return the interval that is the range of the quadratic defined by
@@ -525,18 +559,95 @@ def quadratic(x, a, b, c):
     >>> str_interval(quadratic(interval(1, 3), 2, -3, 1))
     '0 to 10'
     """
-    "*** YOUR CODE HERE ***"
+    def ft(t):
+        return a*t*t + b*t + c
+    critical_point = -b/(2*a)
+    if (critical_point-lower_bound(x))*(upper_bound(x)-critical_point) > 0:
+        return interval(
+            min(ft(critical_point), ft(upper_bound(x)), ft(lower_bound(x))),
+            max(ft(critical_point), ft(upper_bound(x)), ft(lower_bound(x))))
+    else:
+        return interval(min(ft(lower_bound(x)), ft(upper_bound(x))), max(ft(lower_bound(x)), ft(upper_bound(x))))
+
 
 def polynomial(x, c):
     """Return the interval that is the range of the polynomial defined by
     coefficients c, for domain interval x.
 
     >>> str_interval(polynomial(interval(0, 2), [-1, 3, -2]))
-    '-3 to 0.125'
+    '-3.0 to 0.125'
     >>> str_interval(polynomial(interval(1, 3), [1, -3, 2]))
-    '0 to 10'
+    '0.0 to 10.0'
     >>> str_interval(polynomial(interval(0.5, 2.25), [10, 24, -6, -8, 3]))
     '18.0 to 23.0'
     """
-    "*** YOUR CODE HERE ***"
+
+    def add_fn(coeff, k, f):
+        return lambda x: coeff * pow(x, k) + f(x)
+
+    def add_dfn(coeff, k, df):
+        return lambda x: k * coeff * pow(x, k - 1) + df(x)
+
+    def add_ddfn(coeff, k, ddf):
+        return lambda x: k * (k - 1) * coeff * pow(x, k - 2) + ddf(x)
+
+    # Define the polynomial and its first and second derivatives.
+    f = lambda x: 0
+    df = lambda x: 0
+    ddf = lambda x: 0
+    for k, coeff in enumerate(c):
+        # Actually it's a recursive call. It's a little bit different cause it's from bottom to top
+        # as this statement processes, f updates ( and a new lambda func is defined every time this statement executed)
+        f = add_fn(coeff, k, f)
+        if k > 0:
+            df = add_dfn(coeff, k, df)
+        if k > 1:
+            ddf = add_ddfn(coeff, k, ddf)
+
+    # Find as many extreme points as we can using Newton's method
+    lower, upper = lower_bound(x), upper_bound(x)
+    num_steps = 20
+    step = (upper - lower) / num_steps
+    starts = [lower + k * step for k in range(num_steps)]
+    extremums = [find_zero(df, ddf, n) for n in starts]
+
+    # Filter for the interval x and return
+    ns = [n for n in extremums if n > lower and n < upper] + [lower, upper]
+    values = [f(n) for n in ns]
+    return interval(min(values), max(values))
+
+
+# Newton's method from lecture
+
+def improve(update, close, guess=1, max_updates=100):
+    """Iteratively improve guess with update until close(guess) is true or
+    max_updates have been applied."""
+    k = 0
+    while not close(guess) and k < max_updates:
+        guess = update(guess)
+        k = k + 1
+    return guess
+
+
+def approx_eq(x, y, tolerance=1e-15):
+    return abs(x - y) < tolerance
+
+
+def find_zero(f, df, guess=1):
+    """Return a zero of the function f with derivative df."""
+
+    def near_zero(x):
+        return approx_eq(f(x), 0)
+
+    return improve(newton_update(f, df), near_zero, guess)
+
+
+def newton_update(f, df):
+    """Return an update function for f with derivative df,
+    using Newton's method."""
+
+    def update(x):
+        return x - f(x) / df(x)
+
+    return update
 
