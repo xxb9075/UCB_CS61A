@@ -5,7 +5,6 @@ from lab05 import *
 # Shakespeare and Dictionaries
 def build_successors_table(tokens):
     """Return a dictionary: keys are words; values are lists of successors.
-
     >>> text = ['We', 'came', 'to', 'investigate', ',', 'catch', 'bad', 'guys', 'and', 'to', 'eat', 'pie', '.']
     >>> table = build_successors_table(text)
     >>> sorted(table)
@@ -21,10 +20,12 @@ def build_successors_table(tokens):
     prev = '.'
     for word in tokens:
         if prev not in table:
-            "*** YOUR CODE HERE ***"
-        "*** YOUR CODE HERE ***"
+            table[prev] = [word]
+        else:
+            table[prev].append(word)
         prev = word
     return table
+
 
 def construct_sent(word, table):
     """Prints a random sentence starting with word, sampling from
@@ -38,9 +39,14 @@ def construct_sent(word, table):
     """
     import random
     result = ''
+    result = list(result)
     while word not in ['.', '!', '?']:
-        "*** YOUR CODE HERE ***"
+        result.append(word)
+        value = random.choice(table[word])
+        word = value
+    result = ' '.join(map(str, result))
     return result.strip() + word
+
 
 def shakespeare_tokens(path='shakespeare.txt', url='http://composingprograms.com/shakespeare.txt'):
     """Return the words of Shakespeare's plays as a list."""
@@ -52,6 +58,7 @@ def shakespeare_tokens(path='shakespeare.txt', url='http://composingprograms.com
         shakespeare = urlopen(url)
         return shakespeare.read().decode(encoding='ascii').split()
 
+
 # Uncomment the following two lines
 # tokens = shakespeare_tokens()
 # table = build_successors_table(tokens)
@@ -60,7 +67,19 @@ def random_sent():
     import random
     return construct_sent(random.choice(table['.']), table)
 
+
 # Q8
+
+def delete_leaf(t, old):
+    if label(t) == old and is_leaf(t) == 1:
+        t.pop()
+    else:
+        for i in branches(t):
+            delete_leaf(i, old)
+            if [] in t:
+                t.remove([])
+
+
 def prune_leaves(t, vals):
     """Return a modified copy of t with all leaves that have a label
     that appears in vals removed.  Return None if the entire tree is
@@ -85,7 +104,12 @@ def prune_leaves(t, vals):
         5
       6
     """
-    "*** YOUR CODE HERE ***"
+    for value in vals:
+        delete_leaf(t, value)
+    if not is_tree(t):
+        return None
+    return t
+
 
 # Q9
 def sprout_leaves(t, vals):
@@ -121,7 +145,14 @@ def sprout_leaves(t, vals):
           1
           2
     """
-    "*** YOUR CODE HERE ***"
+    if is_leaf(t):
+        for value in vals:
+            t.append([value])
+    else:
+        for branch in branches(t):
+            sprout_leaves(branch, vals)
+    return t
+
 
 # Q10
 def add_trees(t1, t2):
@@ -159,4 +190,13 @@ def add_trees(t1, t2):
         5
       5
     """
-    "*** YOUR CODE HERE ***"
+    new_root = label(t1) + label(t2)
+
+    diff = len(branches(t1)) - len(branches(t2))
+    if diff > 0:
+        new_branches = [add_trees(x,y) for x,y in zip(branches(t1), branches(t2))] + branches(t1)[-diff:]
+    elif diff < 0:
+        new_branches = [add_trees(x,y) for x,y in zip(branches(t1), branches(t2))] + branches(t2)[diff:]
+    else:
+        new_branches = [add_trees(x,y) for x,y in zip(branches(t1), branches(t2))]
+    return tree(new_root, new_branches)
