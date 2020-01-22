@@ -9,8 +9,7 @@ test = {
           >>> square = lambda x: x * x
           >>> is_odd = lambda x: x % 2 == 1
           >>> map_and_filter([1, 2, 3, 4, 5], square, is_odd)
-          dab62dc32550156f38bcbd91d9a48b1a
-          # locked
+          [1, 9, 25]
           >>> map_and_filter(['hi', 'hello', 'hey', 'world'],
           ...                lambda x: x[4], lambda x: len(x) > 4)
           08d56251df05a668e2cc1a38b0cff68b
