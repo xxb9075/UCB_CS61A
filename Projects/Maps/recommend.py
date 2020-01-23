@@ -106,6 +106,12 @@ def find_predictor(user, restaurants, feature_fn):
 
     # BEGIN Question 7
     b, a, r_squared = 0, 0, 0  # REPLACE THIS LINE WITH YOUR SOLUTION
+    sxx = sum([pow(x - mean(xs), 2) for x in xs])
+    syy = sum([pow(y - mean(ys), 2) for y in ys])
+    sxy = sum(map(lambda x: x[0]*x[1], zip((x - mean(xs) for x in xs), (y - mean(ys) for y in ys))))
+    b = sxy/sxx
+    a = mean(ys)-b*mean(xs)
+    r_squared = pow(sxy, 2)/(sxx*syy)
     # END Question 7
 
     def predictor(restaurant):
@@ -125,6 +131,9 @@ def best_predictor(user, restaurants, feature_fns):
     """
     reviewed = user_reviewed_restaurants(user, restaurants)
     # BEGIN Question 8
+    predictors = {find_predictor(user, reviewed, feature_fn)[0]: find_predictor(user, reviewed, feature_fn)[1]
+                  for feature_fn in feature_fns}
+    return max(predictors, key=lambda key: predictors[key])
     # END Question 8
 
 
@@ -140,7 +149,14 @@ def rate_all(user, restaurants, feature_fns):
     predictor = best_predictor(user, ALL_RESTAURANTS, feature_fns)
     reviewed = user_reviewed_restaurants(user, restaurants)
     # BEGIN Question 9
-    "*** YOUR CODE HERE ***"
+    all_restaurant = {}
+    for restaurant in restaurants:
+        name = restaurant_name(restaurant)
+        if restaurant in reviewed:
+            all_restaurant[name] = user_rating(user, name)
+        else:
+            all_restaurant[name] = predictor(restaurant)
+    return all_restaurant
     # END Question 9
 
 
@@ -152,7 +168,7 @@ def search(query, restaurants):
     restaurants -- A sequence of restaurants
     """
     # BEGIN Question 10
-    "*** YOUR CODE HERE ***"
+    return [restaurant for restaurant in restaurants if query in restaurant_categories(restaurant)]
     # END Question 10
 
 
