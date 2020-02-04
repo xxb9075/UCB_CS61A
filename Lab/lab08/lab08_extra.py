@@ -25,17 +25,26 @@ class Keyboard:
     """
 
     def __init__(self, *args):
-        "*** YOUR CODE HERE ***"
+        self.buttons = args
 
     def press(self, info):
         """Takes in a position of the button pressed, and
         returns that button's output"""
-        "*** YOUR CODE HERE ***"
+        for button in self.buttons:
+            if button.pos == info:
+                button.pressed += 1
+                return button.key
 
     def typing(self, typing_input):
         """Takes in a list of positions of buttons pressed, and
         returns the total output"""
-        "*** YOUR CODE HERE ***"
+        i = 0
+        output = ''
+        while i < len(typing_input):
+            output += self.press(typing_input[i])
+            i += 1
+        return output
+
 
 class Button:
     def __init__(self, pos, key):
@@ -73,7 +82,27 @@ def make_advanced_counter_maker():
     >>> tom_counter('global-count')
     1
     """
-    "*** YOUR CODE HERE ***"
+    global_count = 0
+    def counter():
+        nonlocal global_count
+        local_count = 0
+        def local_counter(key):
+            nonlocal global_count
+            nonlocal local_count
+            if key == 'count':
+                local_count += 1
+                return local_count
+            elif key == 'reset':
+                local_count = 0
+                return
+            elif key == 'global-count':
+                global_count += 1
+                return global_count
+            elif key == 'global-reset':
+                global_count = 0
+                return
+        return local_counter
+    return counter
 
 # Lists
 def trade(first, second):
@@ -103,12 +132,26 @@ def trade(first, second):
     >>> c
     [4, 3, 1, 4, 1]
     """
-    m, n = 1, 1
+    m, n = 0, 0
+    found = False
+    first_select = [first[m]]
+    second_select = [second[n]]
+    while sum(first_select) != sum(second_select) and m < len(first)-1:  # Outer loop
+        while sum(first_select) != sum(second_select) and n < len(second)-1:  # Inner loop
+            n += 1
+            second_select.append(second[n])
+        if sum(first_select) == sum(second_select):  # Identifier
+            found = True
+            break
+        else:  # Loop conditions
+            n = 0
+            second_select = [second[n]]
+            m += 1
+            first_select.append(first[m])
 
-    "*** YOUR CODE HERE ***"
-
-    if False: # change this line!
-        first[:m], second[:n] = second[:n], first[:m]
+    if found:
+        first[:] = second_select+first[m+1:]
+        second[:] = first_select+second[n+1:]
         return 'Deal!'
     else:
         return 'No deal!'
@@ -129,7 +172,14 @@ def make_to_string(front, mid, back, empty_repr):
     >>> jerrys_to_string(Link.empty)
     '()'
     """
-    "*** YOUR CODE HERE ***"
+    def maker(lst):
+        if lst is Link.empty:
+            return empty_repr
+        elif lst.rest is Link.empty:
+            return front+str(lst.first)+mid+empty_repr+back
+        else:
+            return front+str(lst.first)+mid+maker(lst.rest)+back
+    return maker
 
 def tree_map(fn, t):
     """Maps the function fn over the entries of t and returns the
@@ -153,7 +203,14 @@ def tree_map(fn, t):
           128
         256
     """
-    "*** YOUR CODE HERE ***"
+    if t.is_leaf():
+        t.label = fn(t.label)
+        return
+    else:
+        t.label = fn(t.label)
+        for branch in t.branches:
+            tree_map(fn, branch)
+    return t
 
 def long_paths(tree, n):
     """Return a list of all paths in tree with length at least n.
@@ -184,7 +241,13 @@ def long_paths(tree, n):
     >>> long_paths(whole, 4)
     [Link(0, Link(11, Link(12, Link(13, Link(14)))))]
     """
-    "*** YOUR CODE HERE ***"
+    paths = []
+    if n <= 0 and tree.is_leaf():
+        paths.append(Link(tree.label))
+    for b in tree.branches:
+        for path in long_paths(b, n - 1):
+            paths.append(Link(tree.label, path))
+    return paths
 
 # Orders of Growth
 def zap(n):
